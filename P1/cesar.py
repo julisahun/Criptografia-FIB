@@ -1,7 +1,7 @@
 cripted = []
 
 
-with open('text1.txt') as f:
+with open('text.txt') as f:
     lines = f.readlines()
     for line in lines:
         cripted = cripted + [int(s) for s in line if s.isdigit()]

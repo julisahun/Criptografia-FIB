@@ -1,5 +1,5 @@
 cripted = ''
-with open('text1.txt') as f:
+with open('text.txt') as f:
     lines = f.readlines()
     for line in lines:
         cripted = cripted + line

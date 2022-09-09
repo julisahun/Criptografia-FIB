@@ -5,12 +5,12 @@ with open('text1.txt') as f:
         cripted = cripted + line
 
 length = len(cripted)
-for i2 in range (162, 163):
+for i2 in range (100, 200):
     st = ''
     j = 0
     k = 0
     c = 0
-    while(c < 100):
+    while(c < 20):
         if (i2*j+k) >= length:
             j = 0
             k = k + 1

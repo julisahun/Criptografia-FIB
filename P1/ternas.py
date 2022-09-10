@@ -53,10 +53,6 @@ def getMatrix(originalTriples, resultTriples):
         if abs(round(d,0) - d) > 0.01:
             return False
     X = toMatrix(X)
-    print(X)
-    print(originalTriples)
-    print(resultTriples)
-    exit()
     aux = np.array(X)
     inv = np.linalg.inv(aux)
     for r in inv:
@@ -126,7 +122,7 @@ for terna in d:
 commonList = []
 while not mostCommon.empty():
     commonList.append(mostCommon.get())
-print(commonList)
+# print(commonList)
 
 for triplet0 in comparingTriples:
     for triplet1 in comparingTriples:
@@ -145,7 +141,6 @@ for triplet0 in comparingTriples:
                         t4 = triplet4[1]
                         t5 = triplet5[1]
                         matrix = getMatrix([t0, t1, t2], [t3, t4, t5])
-                        # matrix = [[569.0000000000019, 58.00000000000021, -247.00000000000088], [43.85714285714286, 6.0000000000000036, -19.000000000000014], [380.85714285714414, 40.000000000000135, -165.00000000000057]]
                         if matrix:
                             matrix = np.linalg.inv(matrix)
                             print(matrix)

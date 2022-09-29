@@ -8,14 +8,6 @@ from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import chardet
 
-def addPadding(s):
-    remaining = 16 - len(s) % 16
-    byte = remaining.to_bytes(1,'big')
-    while remaining > 0:
-        s += byte
-        remaining -= 1
-    return s
-
 ciphertext = open('./files/AES_juli.sahun_2022_09_20_16_59_27.enc', "rb").read()
 ciphertext = pad(ciphertext, AES.block_size)
 # ciphertext = b'\xd2\x12\xf9"_\xbd8\xb4Z:\xca$\xa1\x14V\x13'

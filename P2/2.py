@@ -1,9 +1,29 @@
+from ast import While
 from cgi import print_arguments
 import functools
 from threading import local
 m = "110001011"
 
-# NOT OK
+def mod(a,b):
+  result = restore('0')
+  return restore(result)
+
+# OK
+def nextPolynomial(a):
+  newPolynomial = ''
+  carry = True
+  for i in reversed(range(len(a))):
+    if carry == True:
+      if a[i] == '1':
+        newPolynomial += '0'
+      else:
+        newPolynomial += '1'
+        carry = False
+    else:
+      newPolynomial += a[i]
+  return restore(newPolynomial[::-1])
+
+# OK
 def xor(v1,v2):
     return restore(''.join([str(ord(a) ^ ord(b)) for a,b in zip(v1, v2)]))
     
@@ -56,16 +76,12 @@ def irreducible_polynomials():
     a = '10000000'
     while a != '00000000':
         b = '10000000'
-        #while b < a:
-        #    if False:#mod(a,b) == '00000000':
-        #        result.append(a) 
-        #    b = suma(b, '00000001')
-        a = suma(a, '00000001')
-        print(a)
-        input()
+        while b < a:
+            if mod(a,b) == '00000000':
+                result.append(a) 
+            b = nextPolynomial(b)
+        a = nextPolynomial(a)
     return result
-
-print(suma(restore('1'),restore('1')))
 
 # entrada: a y b elementos del cuerpo representados por enteros entre 0 y 255;
 # salida: un elemento del cuerpo representado por un entero entre 0 y 255 que es el producto en el cuerpo de a y b calculado usando la definici´on en t´erminos de polinomios.
@@ -91,3 +107,5 @@ def GF_product_t(a,b):
 # salida: 0 si a=0x00, inverso de a en el cuerpo si a6=0x00 representado por un entero entre 1 y 255.
 def GF_invers(a):
     return None
+
+irreducible_polynomials()

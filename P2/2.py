@@ -42,14 +42,29 @@ class Poly:
                 pow -= 1
             acc.sum(original)
         self = acc
-            
+    
+    def div(self, poly):
+        if self.lte(poly):
+            return 
 
+
+    def gte(self, poly):
+        for i, val in enumerate(poly.params):
+            if self.params[i] < val:
+                return False
+        return True
+    def lte(self, poly):
+        for i, val in enumerate(poly.params):
+            if self.params[i] > val:
+                return False
+        return True  
+            
 
     def print(self):
         print(self.params)
 
-def polydivB2(p,q): #TODO
-    r = p
+def polydivB2(p,q): #p/q
+    
 
     return r
     

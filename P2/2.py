@@ -1,8 +1,3 @@
-from ast import While
-from cgi import print_arguments
-import functools
-# import numpy as np
-from threading import local
 import copy
 
 m = [1,1,0,0,0,1,0,1,1]
@@ -29,7 +24,6 @@ class Poly:
             self.add(Poly([1,0,0,0,1,0,1,1]))
 
     def mult(self,poly):
-        list = []
         if type(poly) == Poly:
             list = poly.params
         else:
@@ -112,11 +106,12 @@ def div(a, b):
     while a.gte(mult(q,b)):
         q.next()
     q.prev()
-    aux = mult(q,b)
-    aux.print()
     if a.eq(mult(q,b)):
         return [q, Poly()]
     return [q, add(a, q)]
+
+#Nota, Les funcions de la classe Poly, modifiquen l'objecte de la classe, 
+#      Les funcions del modul, no modifiquen cap dels objectes dels parametres
 
 a = Poly([0,0,0,0,0,1,0,0])
 b = Poly([0,0,0,0,0,0,1,0])

@@ -3,12 +3,12 @@ from cgi import print_arguments
 import functools
 # import numpy as np
 from threading import local
-# import galois
+import copy
 
 m = [1,1,0,0,0,1,0,1,1]
 
 class Poly:
-    def __init__(self, params):
+    def __init__(self, params =[0,0,0,0,0,0,0,0]):
         self.params = params
 
     def toPoly(list):
@@ -50,14 +50,14 @@ class Poly:
             return 
 
 
-    def gte(self, poly):
-        
+    def gte(self, poly):        
         for i, val in enumerate(poly.params):
             if self.params[i] < val:
                 return False
             if self.params[i] > val:
                 return True
         return True
+
     def lte(self, poly):
         for i, val in enumerate(poly.params):
             if self.params[i] > val:
@@ -66,27 +66,35 @@ class Poly:
                 return True
         return True  
 
+    def eq(self, poly):
+        for indx, val in enumerate(poly.params):
+            if val != self.params[indx]:
+                return False
+        return True
+
     def next(self):
         for indx, val in enumerate(self.params[::-1]):
             if val == 0:
-                self.params[indx - 1] = 1
-                return
+                self.params[7-indx] = 1
+                return 
+            else: self.params[7-indx] = 0
 
     def prev(self):
         for indx, val in enumerate(self.params[::-1]):
-            if val == 1:
-                self.params[indx - 1] = 0
-                return
             
-
+            if val == 1:
+                self.params[7-indx] = 0
+                return 
+            else: self.params[7-indx] = 1
+                
     def print(self):
         print(self.params)
 
 def toPoly(poly):
     if type(poly) == Poly:
-        a = Poly(poly.params)
+        a = copy.deepcopy(Poly(poly.params))
     else:
-        a = Poly(poly)
+        a = copy.deepcopy(Poly(poly))
     return a
 
 def mult(poly1, poly2):
@@ -103,14 +111,16 @@ def div(a, b):
     q = Poly([0,0,0,0,0,0,0,1])
     while a.gte(mult(q,b)):
         q.next()
-        q.print()
     q.prev()
-    if (a == mult(q,b)):
-        return [q, 0]
+    aux = mult(q,b)
+    aux.print()
+    if a.eq(mult(q,b)):
+        return [q, Poly()]
     return [q, add(a, q)]
 
 a = Poly([0,0,0,0,0,1,0,0])
 b = Poly([0,0,0,0,0,0,1,0])
+
 res = div(a,b)
 print('resultat:')
 res[0].print()

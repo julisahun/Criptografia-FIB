@@ -9,6 +9,7 @@ def mod(a,b):
   return restore(result)
 
 # OK
+#test
 def nextPolynomial(a):
   newPolynomial = ''
   carry = True

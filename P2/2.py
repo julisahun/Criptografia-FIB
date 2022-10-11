@@ -39,7 +39,6 @@ class Poly:
             acc.add(original)
         self.params = acc.params
      
-
     def gte(self, poly):       
         for i, val in enumerate(poly.params):
             if val == 1:
@@ -80,6 +79,19 @@ class Poly:
                 
     def print(self):
         print(self.params)
+    
+    def resized(self):
+        indx = 0
+        while (len(self.params) - indx) > 9 and self.params[indx] == 0:
+            indx += 1
+        return self.params[indx:len(self.params)]
+
+    def mod(self):
+        self.params = self.resized()
+        while len(self.params) > 9:
+            for i, val in enumerate(m):
+                self.params[i] = (self.params[i] + val) % 2
+            self.params = self.resized()
 
 def toPoly(poly):
     if type(poly) == Poly:
@@ -109,8 +121,6 @@ def polyToNum(poly):
             pow = pow // 2
     return num
     
-        
-
 def mult(poly1, poly2):
     a = toPoly(poly1)
     a.mult(poly2)
@@ -134,18 +144,6 @@ def div(a, b):
 
 #Nota, Les funcions de la classe Poly, modifiquen l'objecte de la classe, 
 #      Les funcions del modul, no modifiquen cap dels objectes dels parametres
-
-a = Poly([0,0,0,0,0,0,1,0,1])
-b = Poly([0,0,0,0,0,0,1,1,1])
-
-print(a.gte(b))
-res = div(a,b)
-print('resultat:')
-res[0].print()
-res[1].print()
-
-# print(numToPoly(471))
-
 
 # entrada: a y b elementos del cuerpo representados por enteros entre 0 y 255;
 # salida: un elemento del cuerpo representado por un entero entre 0 y 255 que es el
@@ -182,3 +180,14 @@ def GF_product_t(a, b):
 # salida: 0 si a=0x00, in
 def GF_invers(a):
     return 0
+
+
+
+
+# MAIN:
+
+a = Poly([1,0,0,0,0,0,0,1,0,1])
+b = Poly([0,0,0,0,0,0,1,1,1])
+
+a.mod()
+a.print()

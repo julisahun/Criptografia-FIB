@@ -1,39 +1,77 @@
+from doctest import master
 from pydoc import plain
 from Crypto.Cipher import AES
-import json
-import base64
-import sys
 import functools
-from Crypto.Util.Padding import pad, unpad
-from Crypto.Random import get_random_bytes
-import chardet
+import filetype
+import hashlib
 
-ciphertext = open('./files/AES_juli.sahun_2022_09_20_16_59_27.enc', "rb").read()
-ciphertext = pad(ciphertext, AES.block_size)
-# ciphertext = b'\xd2\x12\xf9"_\xbd8\xb4Z:\xca$\xa1\x14V\x13'
+name = "juli"
 
-key = open("./files/AES_juli.sahun_2022_09_20_16_59_27.key", "rb").read()
-# key = b'\x83\x83\xafj\x0b\xf1\x07\xbd?\x8b\x9dTE\x8b\xf9\x81'
+ciphertext = open("./files/" + name + "/AES_juli.sahun_2022_09_29_11_10_34.enc", "rb").read()
 
-iv = open("./files/AES_juli.sahun_2022_09_20_16_59_27.iv", "rb").read()
-iv = pad(iv, AES.block_size)
-# iv = b'U\x82\xc4\x9f4\xd2\x08-L\x04\tZ\xb3K\x85l'
+key = open("./files/" + name + "/AES_juli.sahun_2022_09_29_11_10_34.key", "rb").read()
+
+iv = open("./files/" + name + "/AES_juli.sahun_2022_09_29_11_10_34.iv", "rb").read()
 
 cipher = AES.new(key, AES.MODE_CBC, iv)
 pt = cipher.decrypt(ciphertext)
+print(filetype.guess(pt))
 
-# try:
-print("The message is authentic:",pt)
-# except ValueError:
 
-#     print("Key incorrect or message corrupted")
+# b
 
-# data = b"secret"
-# key = get_random_bytes(16)
-# cipher = AES.new(key, AES.MODE_CBC)
-# ct_bytes = cipher.encrypt(pad(data, AES.block_size))
-# iv = base64.b64encode(cipher.iv).decode('utf-8')
-# ct = base64.b64encode(ct_bytes).decode('utf-8')
-# # result = json.dumps({'iv':cipher.iv, 'ciphertext':ct_bytes})
-# print(cipher.iv, ct_bytes, key)
-# '{"iv": "bWRHdzkzVDFJbWNBY0EwSmQ1UXFuQT09", "ciphertext": "VDdxQVo3TFFCbXIzcGpYa1lJbFFZQT09"}'
+
+def listXor(a, b):
+    ret = []
+    for i in range(len(a)):
+        ret.append(a[i] ^ b[i])
+    return ret
+
+def toBinary(list):
+    ret = bytearray()
+    for i in list:
+        ret.append(i)
+    return bytes(ret)
+
+
+ciphertext = open("./files/" + name + "/AES_juli.sahun_2022_09_20_16_59_27.puerta_trasera.enc", "rb").read()
+chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+key = {}
+for char1 in chars:
+    for char2 in chars:
+        key[0] = list(map(ord, char1*8 + char2*8))
+        for char3 in chars:
+            for char4 in chars:
+                key[1] = list(map(ord, char3*8 + char4*8))
+                for char5 in chars:
+                    for char6 in chars:
+                        key[2] = list(map(ord, char5*8 + char6*8))
+                        for char7 in chars:
+                            for char8 in chars:
+                                key[3] = list(map(ord, char7*8 + char8*8))
+                                for char9 in chars:
+                                    for char10 in chars:
+                                        key[4] = list(map(ord, char9*8 + char10*8))
+                                        for char11 in chars:
+                                            for char12 in chars:
+                                                key[5] = list(map(ord, char11*8 + char12*8))
+                                                for char13 in chars:
+                                                    for char14 in chars:
+                                                        key[6] = list(map(ord, char13*8 + char14*8))
+                                                        for char15 in chars:
+                                                            for char16 in chars:
+                                                                key[7] = list(map(ord, char15*8 + char16*8))
+                                                                masterKey = functools.reduce(listXor, key.values())
+                                                                h = hashlib.sha256(toBinary(masterKey)).hexdigest()
+                                                                finalKey = str.encode(h[:16])
+                                                                iv = str.encode(h[48:])
+
+                                                                cipher = AES.new(finalKey, AES.MODE_CBC, iv)
+                                                                pt = cipher.decrypt(ciphertext)
+                                                                if filetype.guess(pt) != None:
+                                                                    print(filetype.guess(pt))
+                                                                    exit()
+            
+
+
+

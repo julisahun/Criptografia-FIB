@@ -17,7 +17,6 @@ class transaction:
         self.signature
 
 class rsa_key:
-
     def check_congruent(self,a,c,m,debug=True):
         if (a % m) != (c % m):
             print("Congruent check not passed.")
@@ -60,24 +59,23 @@ class rsa_key:
             while not sympy.isprime(p):
                 p = random.randint(2**(bits_modulo/2 - 1)+1,2**(bits_modulo/2)-1)
             q = random.randint(2**(bits_modulo/2 - 1 )+1,2**(bits_modulo/2)-1)
-            while not sympy.isprime(q) and p == q:
+            while not sympy.isprime(q) or p == q:
                 q = random.randint(2**(bits_modulo/2 - 1)+1,2**(bits_modulo/2)-1)
-            if  math.gcd((p-1)*(q-1), e) == 1:
+            if  math.gcd(e,p*q) == 1 and e < (p-1)*(q-1):
                 return int(p), int(q)
 
 class rsa_public_key:
-    def __init__(self):    # rsa_key: {e,m}
+    def __init__(self, modulus):    # rsa_key: {e,m}
         self.publicExponent = 2**16+1
-        self.modulus = 2048
+        self.modulus = modulus
 
     def verify(self, message, signature):
         return pow(signature,self.publicExponent,self.modulus) == message
 
 a = rsa_key()
-b = rsa_public_key()
+b = rsa_public_key(a.modulus)
 print(b.verify(123, a.sign(123)))
 print(b.verify(123, a.sign_slow(123)))
-#print(a.sign(123) == a.sign_slow(123))
 
 # d = gcdex(e, phi)[0]
 

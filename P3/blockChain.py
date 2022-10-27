@@ -1,7 +1,9 @@
+from copyreg import pickle
 import math
 import hashlib
 import sympy
 import random
+import pickle
 from tests import run_test
 
 d = 16
@@ -48,10 +50,14 @@ class block:
 
 class block_chain:
     def __init__(self, transaction):
-        self.list_of_blocks = [block().genesis(transaction)]
+        b = block()
+        b.genesis(transaction)
+        self.list_of_blocks = [b]
+        
 
     def add_block(self, transaction):
-        newBlock = self.list_of_blocks[-1].next_block(transaction)
+        newBlock = self.list_of_blocks[-1]
+        newBlock.next_block(transaction)
         self.list_of_blocks.append(newBlock)
     
     def verify(self):
@@ -135,11 +141,12 @@ class rsa_public_key:
 a = rsa_key()
 b = rsa_public_key(a)
 t = transaction(150, a)
-# b = block()
-# bc = block_chain(t)
-# b.genesis(t)
 run_test(a, b, t)
 
-
+bc = block_chain(t)
+for i in range(100):
+    bc.add_block(transaction(i, a))
+with open('validChain.pickle', 'wb') as handle:
+    pickle.dump(bc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # x2 + (r+s)x + rs = 0

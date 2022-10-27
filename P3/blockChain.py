@@ -1,12 +1,13 @@
 from copyreg import pickle
 import math
 import hashlib
+import copy
 import sympy
 import random
 import pickle
 from tests import run_test
 
-d = 16
+d = 2
 class block:
     def __init__(self):
         self.block_hash = 0
@@ -55,8 +56,8 @@ class block_chain:
         self.list_of_blocks = [b]
         
 
-    def add_block(self, transaction):
-        newBlock = self.list_of_blocks[-1]
+    def add_block(self, transaction): 
+        newBlock = copy.deepcopy(self.list_of_blocks[-1])
         newBlock.next_block(transaction)
         self.list_of_blocks.append(newBlock)
     
@@ -90,7 +91,9 @@ class rsa_key:
             return True
 
     def __init__(self, bits_modulo=2048, e=2**16+1):
-        self.primeP, self.primeQ =  self.getPrimes(e, bits_modulo)
+        # self.primeP, self.primeQ =  self.getPrimes(e, bits_modulo)
+        self.primeP = 90211599723969104016625926763980042213540071897881531375764780812210604210702519786173655903076819058124730199846109746848822398877929550795075532240817937669609355094069415419376305426980258917504341721445049280730939430519242286969898629142331501423329803249933617824586259606419593788653651647032528922361
+        self.primeQ = 81152125634383294403558077216168348054824652218922036350137023783893784833332135586877274856653549366482416199781066952449557820886067912658150889487627944561406532292016295158789834363735707160735026045239786238848331988194644534198608761456911430957186834186791587831830033754997344073845420843067646758107
         self.phi = (self.primeP-1)*(self.primeQ-1)
         self.publicExponent = e
         self.privateExponent = int(sympy.gcdex(e, self.phi)[0])
@@ -146,7 +149,18 @@ run_test(a, b, t)
 bc = block_chain(t)
 for i in range(100):
     bc.add_block(transaction(i, a))
-with open('validChain.pickle', 'wb') as handle:
-    pickle.dump(bc, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+with open('validChain.pickle', 'wb') as file:
+    pickle.dump(bc, file)
+
+bc = block_chain(t)
+for i in range(100):
+    if i < 42:
+        bc.add_block(transaction(i,a))
+    else:
+        bc.list_of_blocks.append(block())
+
+with open('invalidChain.pickle', 'wb') as file:
+    pickle.dump(bc, file)
 
 # x2 + (r+s)x + rs = 0

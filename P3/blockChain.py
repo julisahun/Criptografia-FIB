@@ -1,6 +1,7 @@
 import math
 import sympy
 import random
+from tests import run_test
 
 class block:
     def __init__(self):
@@ -10,11 +11,13 @@ class block:
         self.seed
 
 class transaction:
-    def __init__(self):
-        self.public_key
-        self.RSAkey
-        self.message
-        self.signature
+    def __init__(self, message, RSAkey):
+        self.public_key = rsa_public_key(RSAkey)
+        self.message = message
+        self.signature = RSAkey.sign(message)
+    
+    def verify(self):
+        return self.public_key.verify(message, signature)
 
 class rsa_key:
     def check_congruent(self,a,c,m,debug=True):
@@ -50,6 +53,9 @@ class rsa_key:
     
     def sign_slow(self, message):
         return pow(message, self.privateExponent, self.modulus)
+    
+    def verify(self, message, signature):
+        return pow(signature,self.publicExponent,self.modulus) == message
 
 
     def getPrimes(self,e, bits_modulo):
@@ -65,35 +71,15 @@ class rsa_key:
                 return int(p), int(q)
 
 class rsa_public_key:
-    def __init__(self, modulus):    # rsa_key: {e,m}
-        self.publicExponent = 2**16+1
-        self.modulus = modulus
+    def __init__(self, rsa_key):
+        self.publicExponent = rsa_key.publicExponent
+        self.modulus = rsa_key.modulus
 
     def verify(self, message, signature):
         return pow(signature,self.publicExponent,self.modulus) == message
 
 a = rsa_key()
-b = rsa_public_key(a.modulus)
-print(b.verify(123, a.sign(123)))
-print(b.verify(123, a.sign_slow(123)))
+b = rsa_public_key(a)
+t = transaction(150, a)
 
-# d = gcdex(e, phi)[0]
-
-#firma
-# s = m**d % n -> pow(m, d % phi, n) 
-
-
-
-##teorema chino
-# X = x mod (p*q)
-# a = x mod p
-# b = x mod q
-# p' = mod_inverse(p, q)
-# q' = mod_inverse(q, p)
-# pp' + qq' = 1
-# X = p*p'*b + q*q'*a
-
-#aplicado a la firma
-# s = m**d % n     n = q*p
-# a = m**(d % p-1) % p
-# b = m**(d % q-1) % q    
+run_test(a, b, t)

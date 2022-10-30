@@ -1,5 +1,3 @@
-from itertools import product
-from operator import mod
 from Crypto.PublicKey import RSA
 import sympy
 
@@ -71,15 +69,11 @@ ktkot6jm6wcfet0n00h2emkmxVys/xnpSdJfPmw1mfxCLjk/3Wbm8rW8aWKjbXx3
 pubkey = RSA.importKey(key)
 modulus = pubkey.n
 public_exponent = pubkey.e
-
-def leng(n):
-    return math.ceil(math.log2(n))
-
-offset = 0
-
 b = 512
 
-while offset < 1:
+offset = -1
+
+while offset < 5:
     offset += 1
 
     high = (modulus >> b*3) - offset

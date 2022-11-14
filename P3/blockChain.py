@@ -122,12 +122,12 @@ class rsa_key:
     def getPrimes(self,e, bits_modulo):
         bits_modulo = bits_modulo - 1
         while True:
-            p = random.randint(2**(bits_modulo/2 - 1)+1,2**(bits_modulo/2)-1)
+            p = random.getrandbits(bits_modulo)
             while not sympy.isprime(p):
-                p = random.randint(2**(bits_modulo/2 - 1)+1,2**(bits_modulo/2)-1)
-            q = random.randint(2**(bits_modulo/2 - 1 )+1,2**(bits_modulo/2)-1)
+                p = random.getrandbits(bits_modulo)
+            q = random.getrandbits(bits_modulo)
             while not sympy.isprime(q) or p == q:
-                q = random.randint(2**(bits_modulo/2 - 1)+1,2**(bits_modulo/2)-1)
+                q = random.getrandbits(bits_modulo)
             if  math.gcd(e,p*q) == 1 and e < (p-1)*(q-1):
                 return int(p), int(q)
 

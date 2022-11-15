@@ -4,6 +4,7 @@ import hashlib
 import copy
 import sympy
 import random
+import time
 import pickle
 from tests import run_test
 
@@ -90,7 +91,7 @@ class rsa_key:
                 print("Congruent check passed.")
             return True
 
-    def __init__(self, bits_modulo=2048, e=2**16+1):
+    def __init__(self, bits_modulo=4096, e=2**16+1):
         self.primeP, self.primeQ =  self.getPrimes(e, bits_modulo)
         self.phi = (self.primeP-1)*(self.primeQ-1)
         self.publicExponent = e
@@ -120,15 +121,23 @@ class rsa_key:
 
 
     def getPrimes(self,e, bits_modulo):
-        bits_modulo = bits_modulo - 1
         while True:
+
             p = random.getrandbits(bits_modulo)
+            retry = 1
             while not sympy.isprime(p):
+                if retry % 100 == 0:
+                    print(retry)
+                retry += 1
                 p = random.getrandbits(bits_modulo)
             q = random.getrandbits(bits_modulo)
             while not sympy.isprime(q) or p == q:
+                if retry % 100 == 0:
+                    print(retry)
+                retry += 1
                 q = random.getrandbits(bits_modulo)
             if  math.gcd(e,p*q) == 1 and e < (p-1)*(q-1):
+                print(retry)
                 return int(p), int(q)
 
 class rsa_public_key:
@@ -139,24 +148,48 @@ class rsa_public_key:
     def verify(self, message, signature):
         return pow(signature,self.publicExponent,self.modulus) == message
 
-a = rsa_key()
-b = rsa_public_key(a)
-t = transaction(150, a)
-run_test(a, b, t)
+# a = rsa_key()
+# b = rsa_public_key(a)
+# t = transaction(150, a)
+# run_test(a, b, t)
 
-bc = block_chain(t)
-for i in range(100):
-    bc.add_block(transaction(i, a))
+# bc = block_chain(t)
+# for i in range(100):
+#     bc.add_block(transaction(i, a))
 
-with open('validChain.pickle', 'wb') as file:
-    pickle.dump(bc, file)
+# with open('validChain.pickle', 'wb') as file:
+#     pickle.dump(bc, file)
 
-bc = block_chain(t)
-for i in range(100):
-    if i < 42:
-        bc.add_block(transaction(i,a))
-    else:
-        bc.list_of_blocks.append(block())
+# bc = block_chain(t)
+# for i in range(100):
+#     if i < 42:
+#         bc.add_block(transaction(i,a))
+#     else:
+#         bc.list_of_blocks.append(block())
 
-with open('invalidChain.pickle', 'wb') as file:
-    pickle.dump(bc, file)
+# with open('invalidChain.pickle', 'wb') as file:
+#     pickle.dump(bc, file)
+
+# meanTimes = {}
+# meanSlowTimes = {}
+# import time
+# for bits in [512, 1024, 2048, 4096]:
+#     print(bits)
+#     a = rsa_key(bits_modulo=bits)
+#     times = []
+#     slow_times = []
+#     for i in range(100):
+#         m = random.randint(0, 1000)
+#         start = time.time()
+#         a.sign(m)
+#         end = time.time()
+#         start_slow = time.time()
+#         a.sign_slow(m)
+#         end_slow = time.time()
+#         times.append(end-start)
+#         slow_times.append(end_slow-start_slow)
+#     meanTimes[bits] = sum(times)/len(times)
+#     meanSlowTimes[bits] = sum(slow_times)/len(slow_times)
+a = rsa_key(bits_modulo=4096)
+
+        

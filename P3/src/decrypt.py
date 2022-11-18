@@ -22,9 +22,12 @@ import math
 from glob import glob
 
 p , q = 0, 0
+name='juli.sahun'
 
-for filename in glob('./otherKeys/*pubkeyRSA_RW*.pem'):
+for filename in glob('../allKeys/*pubkeyRSA_RW*.pem'):
     f = open(filename)
+    if name in f.name:
+        continue
     key2 = f.read()
     pubkey2 = RSA.importKey(key2)
     modulusB = pubkey2.n
@@ -36,7 +39,7 @@ for filename in glob('./otherKeys/*pubkeyRSA_RW*.pem'):
             q = g
             break
 phi = (p-1)*(q-1)
-private_exponent = sympy.gcdex(public_exponent,phi)[0]
+private_exponent = sympy.mod_inverse(public_exponent,phi)
 
 
 privateA = RSA.construct((modulus, public_exponent, int(private_exponent)))
@@ -97,7 +100,7 @@ while offset < 5:
 
 
 phi = (p-1)*(q-1)
-private_exponent = sympy.gcdex(public_exponent,phi)[0]
+private_exponent = sympy.mod_inverse(public_exponent,phi)
 
 privateA = RSA.construct((modulus, public_exponent, int(private_exponent)))
 

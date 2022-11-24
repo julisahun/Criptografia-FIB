@@ -1,0 +1,10 @@
+NIST: {
+    p -> p
+    b -> b
+    P -> (Gx, Gy)
+    q -> n
+}
+
+client hello: 120
+cert: 123
+server hello: 124
